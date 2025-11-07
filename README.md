@@ -15,7 +15,7 @@ So optimization = reducing:
 
 ---
 
-#  💥 CSV vs Parquet in PySpark
+#  💥 CSV and Parquet in PySpark
 
 ##  1️ What are CSV and Parquet?
 
