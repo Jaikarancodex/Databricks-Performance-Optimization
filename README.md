@@ -103,19 +103,6 @@ parquet_df.show()
 
 ---
 
-## 5 TL;DR Summary
-
-| Aspect | **CSV** | **Parquet** |
-|---------|----------|-------------|
-| Format | Text | Binary |
-| Size | Larger | Smaller (compressed) |
-| Speed | Slow | Fast |
-| Schema | None | Embedded |
-| Column filtering | Reads all | Reads only needed |
-| Best for | Simplicity | Performance |
-
----
-
  **In short:**  
 >  **CSV** is simple, easy, but heavy and slow.  
 >  **Parquet** is compressed, optimized, and built for big data.
@@ -358,7 +345,7 @@ joined.show()
 
 ---
 
-## TL;DR Recap
+## Recap
 
 | Optimization | What It Does | Example |
 |---------------|---------------|----------|
