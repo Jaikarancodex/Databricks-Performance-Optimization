@@ -15,7 +15,7 @@ So optimization = reducing:
 
 ---
 
-#  CSV vs Parquet in PySpark
+#  💥 CSV vs Parquet in PySpark
 
 ##  1️ What are CSV and Parquet?
 
@@ -137,7 +137,7 @@ parquet_df.show()
 
 ---
 
-##  5 Simple Areas of Optimization (Beginner-Friendly Breakdown)
+# 💥 5 Simple Areas of Optimization (Beginner-Friendly Breakdown)🚀
 
 ### 1️ Caching & Persistence (Memory Optimization)
 
