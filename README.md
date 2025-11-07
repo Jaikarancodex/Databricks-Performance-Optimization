@@ -17,7 +17,7 @@ So optimization = reducing:
 
 #  💥 CSV and Parquet in PySpark
 
-##  1️ What are CSV and Parquet?
+##  1 What are CSV and Parquet?
 
 | Format | Meaning | Type |
 |---------|----------|------|
@@ -29,22 +29,7 @@ but **CSV** is simple and human-readable, while **Parquet** is optimized for **s
 
 ---
 
-##  2️ Core Difference (Conceptually)
-
-| Feature | **CSV** | **Parquet** |
-|----------|----------|-------------|
-| **Storage Type** | Row-based | Column-based |
-| **Readability** | Human-readable (plain text) | Binary (not human-readable) |
-| **Compression** | Minimal (usually none) | High (built-in compression) |
-| **File Size** | Large | Much smaller |
-| **Speed** | Slow to read/write | Very fast for big data |
-| **Schema Info** | Not stored | Schema stored inside file |
-| **Best For** | Simple data exchange, small files | Big data processing, analytics |
-| **Default in** | Excel, pandas | Spark, Hadoop, BigQuery, AWS Athena |
-
----
-
-## 3️ Visual Intuition
+## 2 Visual Intuition
 
 Imagine your dataset like this:
 
@@ -75,7 +60,7 @@ So if you query only `Age`, Spark reads **just that column** — making it faste
 
 ---
 
-## 4️ Real Example in PySpark
+## 3 Real Example in PySpark
 
 ```python
 from pyspark.sql import SparkSession
@@ -106,7 +91,7 @@ parquet_df.show()
 
 ---
 
-##  5️ Performance Comparison
+##  4 Performance Comparison
 
 | Operation | **CSV** | **Parquet** |
 |------------|----------|-------------|
@@ -118,7 +103,7 @@ parquet_df.show()
 
 ---
 
-## 7️ TL;DR Summary
+## 5 TL;DR Summary
 
 | Aspect | **CSV** | **Parquet** |
 |---------|----------|-------------|
@@ -384,16 +369,60 @@ joined.show()
 
 ### ⚡ Combine Them:
 If you **Z-ORDER** your Delta tables and use **smart joins**,  
-your queries will run **2–10× faster**, often with **half the cost **
+your queries will run **2–10× faster**, often with **half the cost**
 
 ---
-
 
 ## ⚡ Final Thought
 
 > Databricks Optimization isn’t about writing new code — it’s about making your existing code **run smarter**.  
 > Faster jobs → Lower cost → Happier engineers 
 
+---
 
+# 💥 Liquid Clustering 
+### What is Liquid Clustering (in short)?
+Liquid Clustering is a new smart way in Databricks (Delta Lake) to organize big data automatically —
+so your queries run faster without needing fixed partitions or manual Z-ordering.
+
+### Think of it like this:
+
+* **Old way**: You decide partitions yourself → region=US, region=India, etc.
+If data grows or query pattern changes → messy, slow.
+
+* **New way** (Liquid Clustering):
+You just say “Hey Databricks, keep my data organized by customer_id”
+→ Databricks automatically clusters and maintains that layout.
+
+### Simple Example
+
+```python
+CREATE TABLE sales (
+  id INT,
+  customer_id STRING,
+  amount DOUBLE
+)
+USING DELTA
+CLUSTER BY (customer_id);
+```
+
+* Now Databricks:
+* Stores similar customer_ids together (automatically).
+* Keeps the layout optimized as new data comes in.
+* Makes filters like WHERE customer_id='C123' run much faster.
+
+### Why It’s Better — Liquid Clustering vs Old Partitioning
+
+| Feature | Old Partitioning | Liquid Clustering |
+|----------|------------------|------------------|
+| **Partition Handling** | Manual partitions | Automatic, flexible |
+| **Change Flexibility** | Hard to change later | Can change clustering keys anytime |
+| **Data Distribution** | Data skew problems | Handles evenly |
+| **Performance on Updates** | Slow updates | Auto-optimizes |
+
+#### ⚡ In One Line:
+```
+Liquid Clustering = Automatic, flexible data organization for faster queries — no more manual partitioning or Z-ordering.
+```
 
 
