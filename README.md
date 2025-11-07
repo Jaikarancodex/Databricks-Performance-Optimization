@@ -154,7 +154,7 @@ df.write.partitionBy("country").format("delta").save("/tmp/sales")
 ```
 
 Then, if you query only `country='India'`,  
-Spark reads only that partition — not all countries 💡
+Spark reads only that partition — not all countries 
 
 💡 **Analogy:**  
 Think of it like keeping your clothes in labeled drawers (shirts, jeans, etc).  
@@ -214,7 +214,7 @@ Instead of asking everyone in the school for one note, just give each group thei
 
 ---
 
-# ⚡ Databricks Optimization Deep Dive: Z-Ordering & Join Optimization
+# 💥 Databricks Optimization Deep Dive: Z-Ordering & Join Optimization
 
 ##  Z-ORDERING — “Find Data Fast”
 
