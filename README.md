@@ -429,9 +429,10 @@ df.groupBy("Dept").count().show()
 - Repartition using better column
 - Enable **Adaptive Query Execution (AQE)** — handles skew automatically in Spark 3+
 
-**Interview Line:**  
-> “Data skew means uneven data distribution across partitions, causing slow or stuck tasks.”
-
+**Tip Line:** 
+```
+“Data skew means uneven data distribution across partitions, causing slow or stuck tasks.”
+```
 ---
 
 ## 💥 Shuffle
@@ -450,9 +451,10 @@ df.groupBy("Dept").agg(sum("Salary"))
 - Use **broadcast joins** for small tables.
 - Enable **AQE** with `spark.sql.adaptive.enabled=true`.
 
-**Interview Tip:**  
-> “Shuffle means data movement across the cluster, triggered by wide transformations.”
-
+**Tip:**  
+```
+ “Shuffle means data movement across the cluster, triggered by wide transformations.”
+```
 ---
 
 ## 💥 Spill
@@ -472,8 +474,10 @@ df.orderBy("Salary").show()
 - Use **cache() / persist()** smartly.
 - Avoid wide transformations on massive data.
 
-**Interview Tip:**  
-> “Spill occurs when Spark writes data to disk due to insufficient memory.”
+**Tip:** 
+```
+ “Spill occurs when Spark writes data to disk due to insufficient memory.”
+```
 
 ---
 
@@ -491,9 +495,10 @@ df.orderBy("Salary").show()
 spark.conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
 ```
 
-**Interview Tip:**  
-> “Serialization improves Spark’s network efficiency; Kryo is faster and uses less space.”
-
+**Tip:**  
+```
+“Serialization improves Spark’s network efficiency; Kryo is faster and uses less space.”
+```
 ---
 
 ## 💥 UDF (User Defined Function)
@@ -540,6 +545,7 @@ df.withColumn("Category", category_udf("Salary")).show()
 ---
 
 ### Quick Recap
-> “Skew causes imbalance, Shuffle moves data, Spill slows due to disk, Serialization transfers efficiently, and UDF adds flexibility.”
-
+```
+ “Skew causes imbalance, Shuffle moves data, Spill slows due to disk, Serialization transfers efficiently, and UDF adds flexibility.”
+```
 
