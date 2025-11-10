@@ -411,5 +411,135 @@ CLUSTER BY (customer_id);
 ```
 Liquid Clustering = Automatic, flexible data organization for faster queries — no more manual partitioning or Z-ordering.
 ```
+---
+
+# PySpark Performance Concepts — Skew, Shuffle, Spill, Serialization & UDF(Code Optimization)
+
+## 💥 Data Skew
+**Meaning:** When some partitions have significantly more data than others, causing uneven processing load.
+
+```python
+# Example: Most records belong to 'IT' department
+df.groupBy("Dept").count().show()
+```
+-> Problem: The 'IT' partition takes much longer, slowing the job.
+
+**Fixes:**
+- Use **salting** (add random key prefixes)
+- Repartition using better column
+- Enable **Adaptive Query Execution (AQE)** — handles skew automatically in Spark 3+
+
+**Interview Line:**  
+> “Data skew means uneven data distribution across partitions, causing slow or stuck tasks.”
+
+---
+
+## 💥 Shuffle
+**Meaning:** Spark redistributes data between nodes during wide transformations like `groupBy`, `join`, or `distinct`.
+
+```python
+df.groupBy("Dept").agg(sum("Salary"))
+```
+
+-> This requires all rows for the same Dept to be together → Spark performs a **shuffle**.
+
+**Cost:** Shuffle = Disk I/O + Network I/O → very expensive.
+
+**Optimizations:**
+- Minimize `groupBy` and `join` on huge columns.
+- Use **broadcast joins** for small tables.
+- Enable **AQE** with `spark.sql.adaptive.enabled=true`.
+
+**Interview Tip:**  
+> “Shuffle means data movement across the cluster, triggered by wide transformations.”
+
+---
+
+## 💥 Spill
+**Meaning:** When executors run out of memory, intermediate data is spilled to disk.
+
+```python
+df.orderBy("Salary").show()
+```
+
+-> Large sorts or joins may trigger spills if memory is insufficient.
+
+**Downside:**  
+- Disk I/O is slower than RAM → performance drop.
+
+**Optimizations:**
+- Increase executor memory.
+- Use **cache() / persist()** smartly.
+- Avoid wide transformations on massive data.
+
+**Interview Tip:**  
+> “Spill occurs when Spark writes data to disk due to insufficient memory.”
+
+---
+
+## 💥 Serialization
+**Meaning:** Converting data objects to byte format for transfer across cluster nodes.
+
+**Why Needed:** Spark is distributed — data must be serialized for network communication.
+
+**Types:**
+- `Java Serializer` (default)
+- `Kryo Serializer` (faster and compact)
+
+**Enable Kryo:**
+```python
+spark.conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+```
+
+**Interview Tip:**  
+> “Serialization improves Spark’s network efficiency; Kryo is faster and uses less space.”
+
+---
+
+## 💥 UDF (User Defined Function)
+Custom logic not available in built-in Spark functions.
+
+```python
+from pyspark.sql.functions import udf
+from pyspark.sql.types import StringType
+
+def categorize(salary):
+    return "High" if salary > 60000 else "Low"
+
+category_udf = udf(categorize, StringType())
+
+df.withColumn("Category", category_udf("Salary")).show()
+```
+ **Output:**
+```
++------+--------+---------+
+| Name | Salary | Category|
++------+--------+---------+
+|Karan |50000.57|Low      |
+|Ravi  |60000.35|Low      |
+|Neha  |70000.79|High     |
+|Arjun |45000.11|Low      |
+|Meena |80000.96|High     |
++------+--------+---------+
+```
+
+ **Note:** UDFs are slower since they bypass Spark’s Catalyst optimizer — prefer **built-in** or **pandas UDFs**.
+
+---
+
+## Summary Table
+
+| Concept | Meaning | Issue | Fix/Optimization |
+|----------|----------|-------|------------------|
+| **Skew** | Uneven data across partitions | Slow tasks | Salting / AQE |
+| **Shuffle** | Data movement between nodes | High I/O cost | Broadcast join / AQE |
+| **Spill** | Data written to disk | Slow performance | Tune memory / persist() |
+| **Serialization** | Convert data to bytes | Network delay | Use Kryo Serializer |
+| **UDF** | Custom logic | Slower execution | Use built-in / pandas UDF |
+
+---
+
+### Quick Recap
+> “Skew causes imbalance, Shuffle moves data, Spill slows due to disk, Serialization transfers efficiently, and UDF adds flexibility.”
 
 
